@@ -1,7 +1,6 @@
 # 🏠 AI Interior Designer
 
-🚀 **Live Demo:**
-urlTry AI Interior Designer[https://ai-interior-designer-eurhnj66zzjm4zzhxuggkh.streamlit.app/](https://ai-interior-designer-eurhnj66zzjm4zzhxuggkh.streamlit.app/)
+**Live Demo:** <a href="https://ai-interior-designer-eurhnj66zzjm4zzhxuggkh.streamlit.app/" target="_blank">Try AI Interior Designer</a>
 
 ---
 
