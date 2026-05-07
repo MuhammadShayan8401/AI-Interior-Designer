@@ -238,7 +238,7 @@ Returns analytics dashboard stats
 ## 👨‍💻 Author
 
 **Muhammad Shayan Ahmed**
-AI + Full Stack Developer
+Data Science Enthusiast
 
 ---
 
