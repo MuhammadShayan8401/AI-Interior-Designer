@@ -1,140 +1,245 @@
 # 🏠 AI Interior Designer
 
-> Upload a room photo → get AI-redesigned interiors in any style, instantly.
+![Python](https://img.shields.io/badge/Python-3.10-blue.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-red.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-DeepLearning-orange.svg)
+![Stable Diffusion](https://img.shields.io/badge/Stable%20Diffusion-v1.5-purple.svg)
+![Status](https://img.shields.io/badge/Status-Active-success.svg)
+![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)
 
-**Pipeline:** Room photo → SegFormer (segmentation) → MiDaS (depth) → Prompt Builder → Stable Diffusion img2img → Output
+> ✨ AI-powered interior redesign system that transforms room images into modern, aesthetic interiors using multi-model generative AI.
 
 ---
 
-## Project Structure
+## 🚀 Live Demo Flow
+
+```
+Upload Room Image → SegFormer → MiDaS → Prompt Engine → Stable Diffusion → AI Designs
+```
+
+---
+
+## 🧠 Project Overview
+
+This project is a **multi-modal AI system** that understands and redesigns interior spaces using computer vision and generative models.
+
+It combines:
+
+* 🧩 Scene segmentation (SegFormer)
+* 📏 Depth estimation (MiDaS)
+* 🎨 Prompt engineering layer
+* 🖼️ Image generation (Stable Diffusion)
+* 📊 Feedback learning loop
+
+---
+
+## ✨ Features
+
+### ⚡ Core Features
+
+* Upload room images (JPG / PNG / WEBP)
+* AI-generated interior redesigns
+* Multiple design variations (1–4)
+* Real-time generation pipeline
+
+### 🧠 AI Capabilities
+
+* Furniture detection (sofa, table, bed, etc.)
+* Depth-aware spatial understanding
+* Context-aware prompt generation
+
+### 🎨 UI Features
+
+* Midjourney-style grid gallery
+* Hover zoom + glow effects
+* One-click image download
+* Like / dislike feedback system
+
+### 📊 Analytics
+
+* Feedback tracking system
+* Style-based performance stats
+* Session-based logging
+
+---
+
+## 🏗️ System Architecture
+
+```
+Room Image
+   ↓
+SegFormer (Segmentation)
+   ↓
+MiDaS (Depth Estimation)
+   ↓
+Prompt Builder (AI Context Engine)
+   ↓
+Stable Diffusion (Image Generation)
+   ↓
+Streamlit UI (Gallery + Feedback)
+```
+
+---
+
+## 📁 Project Structure
 
 ```
 AI-Interior-Designer/
 │
 ├── backend/
-│   ├── app.py                  ← FastAPI entry point
+│   ├── app.py
 │   ├── models/
-│   │   ├── segmentation.py     ← SegFormer (ADE20K)
-│   │   ├── depth.py            ← MiDaS depth estimation
-│   │   ├── diffusion.py        ← Stable Diffusion img2img
-│   │   └── prompts.py          ← Dynamic prompt builder
+│   │   ├── segmentation.py
+│   │   ├── depth.py
+│   │   ├── diffusion.py
+│   │   └── prompts.py
 │   ├── routes/
-│   │   ├── generate.py         ← POST /generate
-│   │   └── feedback.py         ← POST /feedback, GET /feedback/summary
-│   ├── utils/
-│   │   └── image_utils.py      ← base64, resize, validate, save
-│   └── uploads/                ← saved uploads + feedback.json
+│   │   ├── generate.py
+│   │   └── feedback.py
+│   └── utils/
+│       └── image_utils.py
 │
 ├── frontend/
-│   ├── streamlit_app.py        ← Streamlit UI
-│   └── styles.css              ← Custom styling
+│   ├── streamlit_app.py
+│   └── styles.css
 │
-├── colab_runner.ipynb          ← Colab backend launcher
+├── colab_runner.ipynb
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## Quick Start
+## ⚙️ Quick Start
 
-### 1 — Run backend on Google Colab (GPU)
+### 1️⃣ Run Backend (Colab GPU)
 
-1. Open [colab.research.google.com](https://colab.research.google.com)
+1. Open Google Colab
 2. Upload `colab_runner.ipynb`
-3. Set runtime: **Runtime → Change runtime type → T4 GPU**
-4. Run all 4 cells in order
-5. Cell 4 prints your public URL: `https://xxxx.trycloudflare.com`
+3. Enable GPU (T4 recommended)
+4. Run all cells
+5. Copy generated URL:
 
-No accounts or tokens needed — Cloudflare Tunnel is free and instant.
-
-### 2 — Configure frontend
-
-Open `frontend/streamlit_app.py` and update line 10:
-
-```python
-API_URL = "https://xxxx.trycloudflare.com"  # your Colab URL
+```
+https://xxxx.trycloudflare.com
 ```
 
-### 3 — Run Streamlit
+---
+
+### 2️⃣ Configure Frontend
+
+```python
+API_URL = "https://xxxx.trycloudflare.com"
+```
+
+---
+
+### 3️⃣ Run Streamlit App
 
 ```bash
-pip install streamlit requests Pillow
+pip install streamlit requests pillow
 streamlit run frontend/streamlit_app.py
 ```
 
-Visit [http://localhost:8501](http://localhost:8501)
+Open:
 
----
-
-## API Reference
-
-### `GET /health`
-Check server status and GPU availability.
-
-### `POST /generate`
-Run the full pipeline.
-
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `image` | file | required | Room photo (JPG/PNG/WEBP ≤ 10MB) |
-| `room_type` | string | living room | bedroom, kitchen, bathroom... |
-| `style` | string | modern | minimalist, japandi, industrial... |
-| `density` | string | moderate | minimal / moderate / dense |
-| `num_images` | int | 3 | Variations to generate (1–4) |
-| `strength` | float | 0.6 | SD strength (0.3–0.9) |
-
-**Response:**
-```json
-{
-  "success": true,
-  "prompt": "...",
-  "furniture_detected": ["sofa", "coffee table", "lamp"],
-  "segmentation_mask": "<base64>",
-  "depth_map": "<base64>",
-  "generated_images": ["<base64>", ...],
-  "seeds": [123, 456, 789],
-  "settings": { "room_type": "...", "style": "...", ... }
-}
+```
+http://localhost:8501
 ```
 
-### `POST /feedback`
-Submit a rating for a generated image.
+---
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `session_id` | string | Frontend session ID |
-| `image_index` | int | Which variation (0-indexed) |
-| `rating` | int | 1 (👍) or -1 (👎) |
-| `seed` | int | Seed of rated image |
+## 📡 API Endpoints
 
-### `GET /feedback/summary`
-Returns aggregate stats including like rate and breakdown by style.
+### 🔹 GET /health
+
+Returns system status + GPU info
 
 ---
 
-## Models
+### 🔹 POST /generate
 
-| Model | Task | Source |
-|-------|------|--------|
-| `nvidia/segformer-b2-finetuned-ade-512-512` | Semantic segmentation | HuggingFace |
-| `intel-isl/MiDaS` (small) | Depth estimation | torch.hub |
-| `runwayml/stable-diffusion-v1-5` | Image generation | HuggingFace |
+Generates interior designs
 
----
-
-## Tips for Best Results
-
-- Use well-lit, wide-angle room photos (like real estate listings)
-- Strength 0.5–0.65 gives the best redesign while keeping layout
-- Living rooms and bedrooms produce the most consistent results
-- The URL changes every Colab session — update `API_URL` each time
+| Field      | Type   | Description                |
+| ---------- | ------ | -------------------------- |
+| image      | file   | Room image                 |
+| room_type  | string | bedroom, kitchen, etc      |
+| style      | string | modern, japandi, etc       |
+| density    | string | minimal / moderate / dense |
+| num_images | int    | 1–4 outputs                |
+| strength   | float  | creativity level           |
 
 ---
 
-## Limitations
+### 🔹 POST /feedback
 
-- Generation takes 30–90s on T4 GPU, longer on CPU
-- Colab free tier disconnects after ~12h idle
-- SD v1.5 is general-purpose, not interior-design-specific
-- Segmentation is less accurate on dark or cluttered rooms
+Stores user ratings for improvement
+
+---
+
+### 🔹 GET /feedback/summary
+
+Returns analytics dashboard stats
+
+---
+
+## 🧠 AI Models Used
+
+| Model                 | Task              |
+| --------------------- | ----------------- |
+| SegFormer (ADE20K)    | Room segmentation |
+| MiDaS (Small)         | Depth estimation  |
+| Stable Diffusion v1.5 | Image generation  |
+
+---
+
+## 🎯 Best Results Tips
+
+* Use bright, clean room images
+* Wide-angle shots work best
+* Strength 0.5–0.65 gives realistic output
+* Living rooms & bedrooms perform best
+
+---
+
+## ⚠️ Limitations
+
+* Colab session resets after inactivity
+* Tunnel URL changes every run
+* Model is not fine-tuned for interiors
+* CPU mode is slow
+
+---
+
+## 🔮 Future Improvements
+
+* Fine-tuned interior diffusion model
+* User authentication system
+* Saved design history (DB integration)
+* Prompt editor UI
+* Docker deployment
+
+---
+
+## 🧩 Tech Stack
+
+* Streamlit
+* FastAPI
+* PyTorch
+* Stable Diffusion
+* HuggingFace Transformers
+* OpenCV
+* Cloudflare Tunnel
+
+---
+
+## 👨‍💻 Author
+
+**Muhammad Shayan Ahmed**
+AI + Full Stack Developer
+
+---
+
+⭐ If you like this project, consider starring the repo!
